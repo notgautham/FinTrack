@@ -38,7 +38,7 @@
     <tbody id="transactions-table">
         {% for transaction in transactions %}
         <tr>
-            <td>{{ transaction.date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ transaction.date.strftime('%d-%m-%Y') }}</td>
             <td>${{ transaction.amount }}</td>
             <td>{{ transaction.category.name }}</td>
             <td>{{ transaction.type }}</td>
@@ -62,16 +62,12 @@
 
 <script>
     function applyFilters() {
-    const selectedCategory = document.getElementById('category-filter').value;
-    const sortOption = document.getElementById('sort-options').value;
+        const selectedCategory = document.getElementById('category-filter').value;
+        const sortOption = document.getElementById('sort-options').value;
 
-    // Redirect with query parameters for category and sorting
-    const url = new URL(window.location.href);
-    url.searchParams.set('category', selectedCategory);
-    url.searchParams.set('sort_by', sortOption);
-    window.location.href = url.toString();
+        alert(`Filter by Category: ${selectedCategory}, Sort by: ${sortOption}`);
+        // Implement backend API call or page reload with selected filters and sorting options here
     }
-
 </script>
 
 <style>
