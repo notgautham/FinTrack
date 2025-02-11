@@ -122,8 +122,16 @@ def transactions():
     sort_by = request.args.get('sort_by', 'date')  # Default to sorting by date
     selected_category = request.args.get('category', 'all')  # Default to show all categories
 
-    # Base query
-    query = Transaction.query
+    # Join Transaction with Category to fetch category name and color
+    query = Transaction.query.join(Category).add_columns(
+        Transaction.id,
+        Transaction.date,
+        Transaction.amount,
+        Transaction.type,
+        Transaction.note,
+        Category.name.label('category_name'),
+        Category.chart_color.label('category_color')  # Include color
+    )
 
     # Apply category filter if a specific category is selected
     if selected_category != 'all':
@@ -133,7 +141,7 @@ def transactions():
     if sort_by == 'amount':
         query = query.order_by(Transaction.amount.desc())
     elif sort_by == 'category':
-        query = query.join(Category).order_by(Category.name)
+        query = query.order_by(Category.name)
     else:  # Default to sorting by date
         query = query.order_by(Transaction.date.desc())
 
