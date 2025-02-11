@@ -65,10 +65,16 @@
         const selectedCategory = document.getElementById('category-filter').value;
         const sortOption = document.getElementById('sort-options').value;
 
-        alert(`Filter by Category: ${selectedCategory}, Sort by: ${sortOption}`);
-        // Implement backend API call or page reload with selected filters and sorting options here
+        // Construct the URL with query parameters
+        const url = new URL(window.location.href);
+        url.searchParams.set('category', selectedCategory);
+        url.searchParams.set('sort_by', sortOption);
+
+        // Redirect to the new URL
+        window.location.href = url.toString();
     }
 </script>
+
 
 <style>
     .controls {
