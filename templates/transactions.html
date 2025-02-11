@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Transactions</h2>
+
+<!-- Filters and Sorting -->
+<div class="controls">
+    <label for="category-filter">Filter by Category:</label>
+    <select id="category-filter">
+        <option value="all">All</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="sort-options">Sort by:</label>
+    <select id="sort-options" class="styled-select">
+        <option value="date">Date</option>
+        <option value="amount">Amount</option>
+        <option value="category">Category</option>
+    </select>
+
+    <button onclick="applyFilters()" class="btn">Apply</button>
+</div>
+
+<!-- Transactions Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Note</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="transactions-table">
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.date.strftime('%Y-%m-%d') }}</td>
+            <td>${{ transaction.amount }}</td>
+            <td>{{ transaction.category.name }}</td>
+            <td>{{ transaction.type }}</td>
+            <td>{{ transaction.note }}</td>
+            <td>
+                <a href="{{ url_for('edit_transaction', id=transaction.id) }}">
+                    <button>Edit</button>
+                </a>
+                <a href="{{ url_for('delete_transaction', id=transaction.id) }}" onclick="return confirm('Delete this transaction?');">
+                    <button>Delete</button>
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No transactions found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function applyFilters() {
+    const selectedCategory = document.getElementById('category-filter').value;
+    const sortOption = document.getElementById('sort-options').value;
+
+    // Redirect with query parameters for category and sorting
+    const url = new URL(window.location.href);
+    url.searchParams.set('category', selectedCategory);
+    url.searchParams.set('sort_by', sortOption);
+    window.location.href = url.toString();
+    }
+
+</script>
+
+<style>
+    .controls {
+        margin: 15px 0;
+        text-align: center;
+    }
+
+    select {
+        width: 200px;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #1e1e1e;
+        color: white;
+        border: 1px solid #444;
+        appearance: none;
+    }
+
+    .styled-select {
+        background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D"http://www.w3.org/2000/svg" viewBox%3D"0 0 24 24" fill%3D"white"%3E%3Cpath d%3D"M7 10l5 5 5-5z"/%3E%3C/svg%3E');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: #1e1e1e;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+    }
+
+    th {
+        background-color: #333;
+    }
+
+    tr:hover {
+        background-color: #222;
+    }
+
+    button {
+        margin: 5px;
+        padding: 5px 10px;
+        background-color: #444;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background-color: #666;
+    }
+</style>
+{% endblock %}

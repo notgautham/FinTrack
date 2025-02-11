@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Summary</h2>
+
+<!-- Remaining Balance Section -->
+<div class="balance-container">
+    <h3>Remaining Balance: <span style="color: lightblue;">${{ total_income - total_expense }}</span></h3>
+</div>
+
+<!-- Centered Add Transaction Button -->
+<div class="center-button">
+    <button onclick="toggleTransactionForm()" class="btn add-transaction">Add New Transaction</button>
+</div>
+
+<div class="summary-container">
+    <!-- Income Section -->
+    <div class="income-section">
+        <h3 style="color: lightgreen;">Total Income: ${{ total_income }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, amount, color in income_summary %}
+                    <tr>
+                        <td><span class="color-indicator" style="background-color: {{ color }};"></span></td>
+                        <td>{{ category }}</td>
+                        <td>${{ amount }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">No income recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Expense Section -->
+    <div class="expense-section">
+        <h3 style="color: red;">Total Expense: ${{ total_expense }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, amount, color in expense_summary %}
+                    <tr>
+                        <td><span class="color-indicator" style="background-color: {{ color }};"></span></td>
+                        <td>{{ category }}</td>
+                        <td>${{ amount }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">No expenses recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Income and Expense Form -->
+<div id="transaction-form" class="transaction-modal">
+    <div class="modal-content">
+        <h3>Add Transaction</h3>
+        <form action="{{ url_for('add_transaction') }}" method="POST">
+            <label for="date">Date:</label>
+            <input type="date" name="date" required>
+
+            <label for="amount">Amount:</label>
+            <input type="number" name="amount" step="0.01" required>
+
+            <label for="type">Type:</label>
+            <select name="type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+            </select>
+
+            <label for="category">Category:</label>
+            <select name="category" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="note">Note (Optional):</label>
+            <input type="text" name="note" placeholder="Add a note...">
+
+            <div class="button-group">
+                <button type="submit" class="btn save-btn">Save</button>
+                <button type="button" onclick="toggleTransactionForm()" class="btn cancel-btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleTransactionForm() {
+        const form = document.getElementById("transaction-form");
+        const content = document.querySelector(".summary-container");
+        const balance = document.querySelector(".balance-container");
+        const button = document.querySelector(".center-button");
+
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "flex";
+            content.classList.add("blurred");
+            balance.classList.add("blurred");
+            button.classList.add("blurred");
+        } else {
+            form.style.display = "none";
+            content.classList.remove("blurred");
+            balance.classList.remove("blurred");
+            button.classList.remove("blurred");
+        }
+    }
+</script>
+
+<style>
+    body {
+        background-color: #121212; /* Dark background for the entire page */
+        color: white; /* Light text color for better contrast */
+    }
+
+    .balance-container {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .center-button {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 10px; /* Padding for buttons */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        font-weight: bold; /* Bold text */
+        background-color: #444; /* Dark background for buttons */
+        color: white; /* Text color */
+        transition: background-color 0.3s; /* Smooth transition */
+    }
+
+    .btn:hover {
+        background-color: #666; /* Lighter background on hover */
+    }
+
+    .summary-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .income-section, .expense-section {
+        width: 45%;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #1e1e1e;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-indicator {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+    }
+
+    .blurred {
+        filter: blur(5px);
+        pointer-events: none;
+    }
+
+    .transaction-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #2c2c2c; /* Darker background for better contrast */
+        padding: 20px; /* Increased padding */
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Softer shadow */
+        width: 350px; /* Slightly wider modal */
+        text-align: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center elements horizontally */
+    }
+
+    .modal-content h3 {
+        margin-bottom: 15px; /* Space below the title */
+        color: lightblue; /* Title color */
+    }
+
+    label {
+        display: block;
+        margin: 5px 0; /* Reduced spacing around labels */
+        color: white; /* Label color */
+    }
+
+    input[type="date"],
+    input[type="number"],
+    input[type="text"],
+    select {
+        width: calc(180% - 15px); /* Full width inputs */
+        padding: 8px; /* Padding inside inputs */
+        margin-bottom: 10px; /* Reduced space below inputs */
+        border: 1px solid #444; /* Border for inputs */
+        border-radius: 5px; /* Rounded corners */
+        background-color: #3a3a3a; /* Darker background for inputs */
+        color: white; /* Text color */
+    }
+
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+        border-color: lightblue; /* Highlight border on focus */
+        outline: none; /* Remove default outline */
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between; /* Space between buttons */
+        width: 100%; /* Full width for button group */
+        align-items: center;
+    }
+
+    .save-btn {
+        background-color: lightgreen; /* Green for save button */
+        color: black; /* Text color */
+    }
+
+    .cancel-btn {
+        background-color: red; /* Red for cancel button */
+        color: white; /* Text color */
+    }
+
+    .save-btn:hover {
+        background-color: darkgreen; /* Darker green on hover */
+    }
+
+    .cancel-btn:hover {
+        background-color: darkred; /* Darker red on hover */
+    }
+
+    /* New styles for table spacing */
+    table {
+        border-collapse: separate; /* Use separate borders */
+        border-spacing: 10px; /* Add space between columns */
+        width: 100%; /* Full width for tables */
+        background-color: #1e1e1e; /* Dark background for tables */
+        border-radius: 10px; /* Rounded corners */
+        overflow: hidden; /* Prevent overflow */
+    }
+
+    th, td {
+        padding: 10px 15px; /* Add padding to table headers and cells */
+        text-align: center; /* Center align text */
+        border-bottom: 1px solid #333; /* Bottom border for rows */
+    }
+
+    th {
+        background-color: #333; /* Dark background for headers */
+    }
+
+    tr:hover {
+        background-color: #222; /* Darker background on row hover */
+    }
+</style>
+{% endblock %}

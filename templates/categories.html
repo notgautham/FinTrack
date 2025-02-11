@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2></h2>
+
+<!-- Category Form -->
+<div class="category-form">
+    <h3>Add New Category</h3>
+    <form action="{{ url_for('add_category') }}" method="POST">
+        <label for="category-name">Category Name:</label>
+        <input type="text" class="category-name" id="category-name" name="category-name" placeholder="Enter category name" required>
+
+        <label for="category-type">Type:</label>
+        <select id="category-type" name="category-type">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+        </select>
+
+        <label for="chart-color">Chart Color:</label>
+        <input type="color" id="chart-color" name="chart-color" value="#ff0000">
+
+        <button type="submit" class="add-category-btn">Add Category</button>
+    </form>
+</div>
+
+<!-- Categories List -->
+<h3>Existing Categories</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Chart Color</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category in income_categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.type }}</td>
+            <td><span style="background-color: {{ category.chart_color }}; padding: 5px; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); display: inline-block; width: 20px; height: 20px;"></span></td>
+            <td>
+                <a href="{{ url_for('edit_category', id=category.id) }}">
+                    <button>Edit</button>
+                </a>
+                <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');">
+                    <button>Delete</button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+
+        {% for category in expense_categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.type }}</td>
+            <td><span style="background-color: {{ category.chart_color }}; padding: 5px; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); display: inline-block; width: 20px; height: 20px;"></span></td>
+            <td>
+                <a href="{{ url_for('edit_category', id=category.id) }}">
+                    <button>Edit</button>
+                </a>
+                <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');">
+                    <button>Delete</button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<style>
+
+    .category-form {
+        background-color: #222;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 0 auto 20px auto;
+        max-width: 450px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .category-name {
+        max-width:93%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #1e1e1e;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+    }
+
+    th {
+        background-color: #333;
+    }
+
+    tr:hover {
+        background-color: #222;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 8px 15px;
+        background-color: #444;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 20px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #666;
+    }
+
+    input, select {
+        margin: 10px 10px 10px 0;
+        padding: 8px;
+        width: calc(100% - 15px);
+        background-color: #1e1e1e;
+        border: 1px solid #444;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #chart-color {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 10px;
+        vertical-align: middle;
+    }
+
+    .add-category-btn {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+    }
+</style>
+
+{% endblock %}
