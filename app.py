@@ -120,7 +120,7 @@ def analytics_data():
 def transactions():
     # Fetch query parameters for sorting and filtering
     sort_by = request.args.get('sort_by', 'date')  # Default to sorting by date
-    selected_categories = request.args.getlist('categories')  # Fetch multiple selected categories
+    selected_category = request.args.get('category', 'all')  # Default to show all categories
 
     # Base query: Join Transaction with Category to fetch category details
     query = Transaction.query.join(Category).add_columns(
@@ -133,9 +133,9 @@ def transactions():
         Category.chart_color.label('category_color')
     )
 
-    # Apply category filter if specific categories are selected
-    if selected_categories:
-        query = query.filter(Transaction.category_id.in_(map(int, selected_categories)))
+    # Apply category filter if a specific category is selected
+    if selected_category != 'all':
+        query = query.filter(Transaction.category_id == int(selected_category))
 
     # Apply sorting
     if sort_by == 'amount':
