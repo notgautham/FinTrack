@@ -254,7 +254,7 @@ def edit_category(id):
 
 
 
-# Delete Category
+# Delete Categoryy
 @app.route('/delete_category/<int:id>')
 def delete_category(id):
     category = Category.query.get_or_404(id)
