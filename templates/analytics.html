@@ -1,46 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Analytics & Insights</h2>
+<h2 class="text-3xl font-bold my-5 text-center">Analytics & Insights</h2>
 
 <!-- Expense Breakdown (Pie Chart) -->
-<div class="chart-container">
-    <h3>Expense Breakdown by Category</h3>
-    <canvas id="expense-pie-chart"></canvas>
+<div class="max-w-4xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
+    <h3 class="text-lg font-bold text-white text-center mb-4">Expense Breakdown by Category</h3>
+    <canvas id="expense-pie-chart" class="w-100 h-100 mx-auto"></canvas>
 </div>
 
 <!-- Income vs. Expense Over Time (Bar Chart) -->
-<div class="chart-container">
-    <h3>Income vs. Expense Over Time</h3>
+<div class="max-w-4xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
+    <h3 class="text-lg font-bold text-white text-center mb-4">Income vs. Expense Over Time</h3>
     <canvas id="income-expense-bar-chart"></canvas>
 </div>
 
 <!-- Monthly Savings Trend (Line Chart) -->
-<div class="chart-container">
-    <h3>Monthly Savings Trend</h3>
+<div class="max-w-4xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
+    <h3 class="text-lg font-bold text-white text-center mb-4">Monthly Savings Trend</h3>
     <canvas id="savings-line-chart"></canvas>
 </div>
 
-<!-- Category Spending Trends (Stacked Bar Chart) -->
-<div class="chart-container">
-    <h3>Category Spending Trends</h3>
-    <canvas id="category-trend-chart"></canvas>
-</div>
-
 <!-- Largest Expenses (Table/Bar Chart) -->
-<div class="chart-container">
-    <h3>Largest Expenses</h3>
+<div class="max-w-4xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
+    <h3 class="text-lg font-bold text-white text-center mb-4">Largest Expenses</h3>
     <canvas id="largest-expense-bar-chart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
-        // Fetch analytics data from the backend
         const response = await fetch('/analytics-data');
         const data = await response.json();
 
-        // Expense Breakdown Pie Chart
         new Chart(document.getElementById("expense-pie-chart"), {
             type: "pie",
             data: {
@@ -52,24 +44,21 @@
             }
         });
 
-        // Income vs. Expense Over Time (Bar Chart)
         new Chart(document.getElementById("income-expense-bar-chart"), {
             type: "bar",
             data: {
-            labels: data.income_vs_expense.map(item => item.month), // Full month names
-            datasets: [
-                { label: "Income", data: data.income_vs_expense.map(item => item.income), backgroundColor: "#36a2eb" },
-                { label: "Expense", data: data.income_vs_expense.map(item => item.expense), backgroundColor: "#ff6384" }
+                labels: data.income_vs_expense.map(item => item.month),
+                datasets: [
+                    { label: "Income", data: data.income_vs_expense.map(item => item.income), backgroundColor: "#36a2eb" },
+                    { label: "Expense", data: data.income_vs_expense.map(item => item.expense), backgroundColor: "#ff6384" }
                 ]
             }
         });
 
-
-        // Monthly Savings Trend (Line Chart)
         new Chart(document.getElementById("savings-line-chart"), {
             type: "line",
             data: {
-                labels: data.savings.map(item => item.month), // Full month names
+                labels: data.savings.map(item => item.month),
                 datasets: [{
                     label: "Savings",
                     data: data.savings.map(item => item.savings),
@@ -79,8 +68,6 @@
             }
         });
 
-
-        // Largest Expenses (Bar Chart)
         new Chart(document.getElementById("largest-expense-bar-chart"), {
             type: "bar",
             data: {
@@ -94,27 +81,5 @@
         });
     });
 </script>
-
-
-<style>
-    .chart-container {
-        width: 80%;
-        margin: auto;
-        padding: 20px;
-        background-color: #222;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-
-    canvas {
-        max-width: 100%;
-        max-height: 300px;
-    }
-
-    h3 {
-        text-align: center;
-        color: white;
-    }
-</style>
 
 {% endblock %}

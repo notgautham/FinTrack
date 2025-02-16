@@ -1,153 +1,75 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2></h2>
+<h2 class="text-3xl font-bold my-5 text-center">Categories</h2>
 
 <!-- Category Form -->
-<div class="category-form">
-    <h3>Add New Category</h3>
-    <form action="{{ url_for('add_category') }}" method="POST">
-        <label for="category-name">Category Name:</label>
-        <input type="text" class="category-name" id="category-name" name="category-name" placeholder="Enter category name" required>
+<div class="max-w-lg mx-auto bg-gray-900 p-6 rounded-lg shadow-lg">
+    <h3 class="text-lg font-bold text-white mb-4">Add New Category</h3>
+    <form action="{{ url_for('add_category') }}" method="POST" class="space-y-4">
+        <label for="category-name" class="block text-white font-medium">Category Name:</label>
+        <input type="text" id="category-name" name="category-name" placeholder="Enter category name" required
+            class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none">
 
-        <label for="category-type">Type:</label>
-        <select id="category-type" name="category-type">
+        <label for="category-type" class="block text-white font-medium">Type:</label>
+        <select id="category-type" name="category-type" required
+            class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none">
             <option value="expense">Expense</option>
             <option value="income">Income</option>
         </select>
 
-        <label for="chart-color">Chart Color:</label>
-        <input type="color" id="chart-color" name="chart-color" value="#ff0000">
-
-        <button type="submit" class="add-category-btn">Add Category</button>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <label for="chart-color" class="text-white font-medium">Chart Color:</label>
+                <input type="color" id="chart-color" name="chart-color" value="#ff0000"
+                    class="w-10 h-10 p-1 border border-gray-600 rounded-md">
+            </div>
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">Add Category</button>
+        </div>
     </form>
 </div>
 
 <!-- Categories List -->
-<h3>Existing Categories</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Chart Color</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for category in income_categories %}
-        <tr>
-            <td>{{ category.name }}</td>
-            <td>{{ category.type }}</td>
-            <td><span style="background-color: {{ category.chart_color }}; padding: 5px; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); display: inline-block; width: 20px; height: 20px;"></span></td>
-            <td>
-                <a href="{{ url_for('edit_category', id=category.id) }}">
-                    <button>Edit</button>
-                </a>
-                <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');">
-                    <button>Delete</button>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
+<h3 class="text-xl font-bold text-white my-4 text-center">Existing Categories</h3>
+<div class="overflow-x-auto">
+    <table class="w-full border border-gray-700 text-white bg-gray-900 shadow-lg rounded-3xl">
+        <thead class="bg-gray-950 rounded-t-3xl">
+            <tr>
+                <th class="p-3">Name</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Chart Color</th>
+                <th class="p-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in income_categories %}
+            <tr class="border-t border-gray-600">
+                <td class="p-3">{{ category.name }}</td>
+                <td class="p-3">{{ category.type }}</td>
+                <td class="p-3">
+                    <span class="w-6 h-6 inline-block rounded-full" style="background-color: {{ category.chart_color }};"></span>
+                </td>
+                <td class="p-3">
+                    <a href="{{ url_for('edit_category', id=category.id) }}" class="bg-gray-700 hover:bg-yellow-400 text-white font-semibold py-1 px-3 rounded-lg">Edit</a>
+                    <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');" class="bg-gray-700 hover:bg-red-400 text-white font-semibold py-1 px-3 rounded-lg">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
 
-        {% for category in expense_categories %}
-        <tr>
-            <td>{{ category.name }}</td>
-            <td>{{ category.type }}</td>
-            <td><span style="background-color: {{ category.chart_color }}; padding: 5px; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); display: inline-block; width: 20px; height: 20px;"></span></td>
-            <td>
-                <a href="{{ url_for('edit_category', id=category.id) }}">
-                    <button>Edit</button>
-                </a>
-                <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');">
-                    <button>Delete</button>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<style>
-
-    .category-form {
-        background-color: #222;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 0 auto 20px auto;
-        max-width: 450px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-        position: relative;
-    }
-
-    .category-name {
-        max-width:93%;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: #1e1e1e;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-    }
-
-    th, td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #333;
-    }
-
-    th {
-        background-color: #333;
-    }
-
-    tr:hover {
-        background-color: #222;
-    }
-
-    button {
-        margin-top: 10px;
-        padding: 8px 15px;
-        background-color: #444;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 20px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-        background-color: #666;
-    }
-
-    input, select {
-        margin: 10px 10px 10px 0;
-        padding: 8px;
-        width: calc(100% - 15px);
-        background-color: #1e1e1e;
-        border: 1px solid #444;
-        color: white;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    #chart-color {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 10px;
-        vertical-align: middle;
-    }
-
-    .add-category-btn {
-        position: absolute;
-        bottom: 30px;
-        right: 30px;
-    }
-</style>
-
+            {% for category in expense_categories %}
+            <tr class="border-t border-gray-600">
+                <td class="p-3">{{ category.name }}</td>
+                <td class="p-3">{{ category.type }}</td>
+                <td class="p-3">
+                    <span class="w-6 h-6 inline-block rounded-full" style="background-color: {{ category.chart_color }};"></span>
+                </td>
+                <td class="p-3">
+                    <a href="{{ url_for('edit_category', id=category.id) }}" class="bg-gray-700 hover:bg-yellow-400 text-white font-semibold py-1 px-3 rounded-lg">Edit</a>
+                    <a href="{{ url_for('delete_category', id=category.id) }}" onclick="return confirm('Delete this category?');" class="bg-gray-700 hover:bg-red-400 text-white font-semibold py-1 px-3 rounded-lg">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
