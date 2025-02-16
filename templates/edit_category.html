@@ -1,139 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2></h2>
+<h2 class="text-3xl font-bold my-5 text-center"></h2>
 
-<!-- Edit Category Modal (Hidden Initially) -->
-<div id="editCategoryModal" class="modal">
-    <div class="modal-content">
-        <h3>Edit Category</h3>
-        <form action="{{ url_for('edit_category', id=category.id) }}" method="POST">
-            <div class="form-group">
-                <label for="category-name">Category Name:</label>
-                <input type="text" class="category-name" id="category-name" name="category-name" value="{{ category.name }}" required>
+<!-- Edit Category Modal -->
+<div id="editCategoryModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
+        <h3 class="text-lg font-bold text-white text-center mb-4">Edit Category</h3>
+        <form action="{{ url_for('edit_category', id=category.id) }}" method="POST" class="space-y-4">
+            <div class="flex flex-col">
+                <label for="category-name" class="text-white font-medium">Category Name:</label>
+                <input type="text" id="category-name" name="category-name" value="{{ category.name }}" required
+                    class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none">
             </div>
 
-            <div class="form-group">
-                <label for="category-type">Type:</label>
-                <select id="category-type" name="category-type">
+            <div class="flex flex-col">
+                <label for="category-type" class="text-white font-medium">Type:</label>
+                <select id="category-type" name="category-type" required
+                    class="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-blue-400 focus:outline-none">
                     <option value="expense" {% if category.type == "expense" %}selected{% endif %}>Expense</option>
                     <option value="income" {% if category.type == "income" %}selected{% endif %}>Income</option>
                 </select>
             </div>
 
-            <div class="form-group color-group">
-                <label for="chart-color">Chart Color:</label>
-                <input type="color" id="chart-color" name="chart-color" value="{{ category.chart_color }}">
+            <div class="flex items-center justify-between">
+                <label for="chart-color" class="text-white font-medium">Chart Color:</label>
+                <input type="color" id="chart-color" name="chart-color" value="{{ category.chart_color }}"
+                    class="w-10 h-10 p-1 border border-gray-600 rounded-md">
             </div>
 
-            <button type="submit" class="update-button">Update Category</button>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">Update Category</button>
+            </div>
         </form>
     </div>
 </div>
 
-<style>
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 10;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-content {
-        background-color: #222;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        width: 350px;
-        position: relative;
-    }
-
-    /* Form Layout */
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 10px;
-    }
-
-    .color-group {
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .color-group label {
-        margin-right: 10px;
-    }
-
-    /* Inputs */
-    input, select {
-        margin-top: 5px;
-        padding: 8px;
-        width: 100%;
-        background-color: #1e1e1e;
-        border: 1px solid #444;
-        color: white;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .category-name {
-        max-width:94%;
-    }
-
-    /* Color Input */
-    input[type="color"] {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 10px;
-        vertical-align: middle;
-    }
-
-    /* Button Placement */
-    .update-button {
-        margin-top: 0px;
-        padding: 8px 15px;
-        background-color: #444;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 20px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
-        align-self: flex-end;
-        position: absolute;
-        bottom: 33px;
-        right: 30px;
-    }
-
-    .update-button:hover {
-        background-color: #666;
-
-    }
-</style>
-
 <script>
-    function openModal() {
-        document.getElementById("editCategoryModal").style.display = "flex";
-        document.querySelector(".container").classList.add("modal-active");
-    }
-
     function closeModal() {
         window.location.href = "{{ url_for('categories') }}";
     }
 
-    // Open the modal automatically if the user lands on this page
     document.addEventListener("DOMContentLoaded", function () {
-        openModal();
+        document.getElementById("editCategoryModal").style.display = "flex";
     });
 </script>
 
